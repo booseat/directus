@@ -1,4 +1,4 @@
-import { version } from 'directus/version';
+import { version } from 'booseat-directus/version';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import { useEnv } from '../../env.js';
 import type { TelemetryReport } from '../types/report.js';

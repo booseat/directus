@@ -1,5 +1,5 @@
 {
-	"name": "@directus/app",
+	"name": "booseat-directus-app",
 	"version": "10.13.3",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",

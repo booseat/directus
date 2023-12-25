@@ -6,4 +6,4 @@ if (version) {
 	await updateCheck(version);
 }
 
-import('@directus/api/cli/run.js');
+import('booseat-directus-api/cli/run.js');

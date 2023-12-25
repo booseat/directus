@@ -2,7 +2,7 @@ import type { Request } from 'express';
 import hash from 'object-hash';
 import url from 'url';
 import { getGraphqlQueryAndVariables } from './get-graphql-query-and-variables.js';
-import { version } from 'directus/version';
+import { version } from 'booseat-directus/version';
 
 export function getCacheKey(req: Request): string {
 	const path = url.parse(req.originalUrl).pathname;

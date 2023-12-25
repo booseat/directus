@@ -5,7 +5,7 @@ import { getDatabaseClient } from '../database/index.js';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Snapshot } from '../types/index.js';
 import { DatabaseClients } from '../types/index.js';
-import { version } from 'directus/version';
+import { version } from 'booseat-directus/version';
 
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number().valid(1).required(),
