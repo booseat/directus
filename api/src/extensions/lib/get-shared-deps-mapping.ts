@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export const getSharedDepsMapping = async (deps: string[]): Promise<Record<string, string>> => {
 	const env = useEnv();
 
-	const appDir = await readdir(path.join(resolvePackage('booseat-directus-app', __dirname), 'dist', 'assets'));
+	const appDir = await readdir(path.join(resolvePackage('@booseat/directus-app', __dirname), 'dist', 'assets'));
 	const depsMapping: Record<string, string> = {};
 
 	for (const dep of deps) {

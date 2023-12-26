@@ -1,5 +1,5 @@
 {
-	"name": "booseat-directus",
+	"name": "@booseat/directus",
 	"version": "10.8.3",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
@@ -54,7 +54,7 @@
 		"directus": "cli.js"
 	},
 	"dependencies": {
-		"booseat-directus-api": "workspace:*",
+		"@booseat/directus-api": "workspace:*",
 		"@directus/update-check": "workspace:*"
 	},
 	"engines": {

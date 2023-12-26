@@ -1,5 +1,5 @@
 {
-	"name": "booseat-directus-api",
+	"name": "@booseat/directus-api",
 	"version": "15.0.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
@@ -66,7 +66,7 @@
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
 		"@aws-sdk/client-ses": "3.478.0",
-		"booseat-directus-app": "workspace:*",
+		"@booseat/directus-app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
@@ -104,7 +104,7 @@
 		"date-fns": "3.0.6",
 		"deep-diff": "1.0.2",
 		"destroy": "1.2.0",
-		"booseat-directus": "workspace:*",
+		"@booseat/directus": "workspace:*",
 		"dotenv": "16.3.1",
 		"encodeurl": "1.0.2",
 		"eventemitter2": "6.4.9",

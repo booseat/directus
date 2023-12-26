@@ -41,6 +41,12 @@ importers:
       '@aws-sdk/client-ses':
         specifier: 3.478.0
         version: 3.478.0
+      '@booseat/directus':
+        specifier: workspace:*
+        version: link:../directus
+      '@booseat/directus-app':
+        specifier: workspace:*
+        version: link:../app
       '@directus/constants':
         specifier: workspace:*
         version: link:../packages/constants
@@ -113,12 +119,6 @@ importers:
       axios:
         specifier: 1.6.2
         version: 1.6.2
-      booseat-directus:
-        specifier: workspace:*
-        version: link:../directus
-      booseat-directus-app:
-        specifier: workspace:*
-        version: link:../app
       busboy:
         specifier: 1.6.0
         version: 1.6.0
@@ -844,12 +844,12 @@ importers:
 
   directus:
     dependencies:
+      '@booseat/directus-api':
+        specifier: workspace:*
+        version: link:../api
       '@directus/update-check':
         specifier: workspace:*
         version: link:../packages/update-check
-      booseat-directus-api:
-        specifier: workspace:*
-        version: link:../api
 
   packages/components:
     dependencies:
@@ -11498,6 +11498,7 @@ packages:
 
   /is-bigint@1.0.4:
     resolution: {integrity: sha512-zB9CruMamjym81i2JZ3UMn54PKGsQzsJeo6xvN3HJJ4CAsQNB6iRutp2To77OfCNuoxspsIhzaPoO1zyCEhFOg==}
+    requiresBuild: true
     dependencies:
       has-bigints: 1.0.2
 
@@ -11510,6 +11511,7 @@ packages:
   /is-boolean-object@1.1.2:
     resolution: {integrity: sha512-gDYaKHJmnj4aWxyj6YHyXVpdQawtVLHU5cb+eztPGczf6cjuTdwve5ZIEfgXqH4e57An1D1AKf8CZ3kYrQRqYA==}
     engines: {node: '>= 0.4'}
+    requiresBuild: true
     dependencies:
       call-bind: 1.0.5
       has-tostringtag: 1.0.0
@@ -11607,6 +11609,7 @@ packages:
   /is-number-object@1.0.7:
     resolution: {integrity: sha512-k1U0IRzLMo7ZlYIfzRu23Oh6MiIFasgpb9X76eqfFZAqwH44UI4KTBvBYIZ1dSL9ZzChTB9ShHfLkR4pdW5krQ==}
     engines: {node: '>= 0.4'}
+    requiresBuild: true
     dependencies:
       has-tostringtag: 1.0.0
 
@@ -11684,6 +11687,7 @@ packages:
   /is-symbol@1.0.4:
     resolution: {integrity: sha512-C/CPBqKWnvdcxqIARxyOh4v1UUEOCHpgDa0WYgpKDFMszcrPcffg5uhwSgPCLD2WWxmq6isisz87tzT01tuGhg==}
     engines: {node: '>= 0.4'}
+    requiresBuild: true
     dependencies:
       has-symbols: 1.0.3
 
