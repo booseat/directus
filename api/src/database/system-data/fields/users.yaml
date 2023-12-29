@@ -29,6 +29,23 @@ fields:
       masked: true
     width: half
 
+  - field: phone_number
+    interface: input
+    options:
+      iconRight: call
+    width: half
+
+  - field: sms_one_time_password
+    special:
+      - hash
+      - conceal
+    interface: input-hash
+    readonly: true
+    options:
+      iconRight: lock
+      masked: true
+    width: half
+
   - field: avatar
     interface: file
     width: full
@@ -205,6 +222,9 @@ fields:
     readonly: true
     display_options:
       relative: true
+
+  - field: sms_one_time_password_expire
+    hidden: true
 
   - field: provider
     width: half

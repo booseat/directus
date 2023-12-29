@@ -16,6 +16,10 @@ columns:
     length: 128
     nullable: false
     unique: true
+  phone_number:
+    type: string
+    length: 15
+    unique: true
   password:
     type: string
     length: 255
@@ -56,6 +60,11 @@ columns:
   token:
     type: string
     length: 255
+  sms_one_time_password:
+    type: string
+    length: 255
+  sms_one_time_password_expire:
+    type: timestamp
   last_access:
     type: timestamp
   last_page:

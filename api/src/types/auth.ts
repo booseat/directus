@@ -12,6 +12,7 @@ export interface User {
 	last_name: string | null;
 	email: string | null;
 	password: string | null;
+	phone_number: string | null;
 	status: 'active' | 'suspended' | 'invited';
 	role: string | null;
 	provider: string;
@@ -19,6 +20,8 @@ export interface User {
 	auth_data: string | Record<string, unknown> | null;
 	app_access: boolean;
 	admin_access: boolean;
+	sms_one_time_password: string | null;
+	sms_one_time_password_expire: Date | null;
 }
 
 export type AuthData = Record<string, any> | null;

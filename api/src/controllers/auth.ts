@@ -7,6 +7,7 @@ import {
 	createOAuth2AuthRouter,
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
+	createPhoneAuthRouter,
 } from '../auth/drivers/index.js';
 import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { useEnv } from '../env.js';
@@ -45,6 +46,10 @@ for (const authProvider of authProviders) {
 
 		case 'saml':
 			authRouter = createSAMLAuthRouter(authProvider.name);
+			break;
+
+		case 'phone':
+			authRouter = createPhoneAuthRouter(authProvider.name);
 			break;
 	}
 
