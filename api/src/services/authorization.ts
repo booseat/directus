@@ -8,7 +8,7 @@ import type {
 	SchemaOverview,
 } from '@directus/types';
 import { validatePayload } from '@directus/utils';
-import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@booseat/directus-validation';
 import type { Knex } from 'knex';
 import { cloneDeep, flatten, isArray, isNil, merge, reduce, uniq, uniqWith } from 'lodash-es';
 import { GENERATE_SPECIAL } from '../constants.js';

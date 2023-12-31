@@ -4,7 +4,7 @@ import { toArray } from '@directus/utils';
 
 export interface FailedValidationErrorExtensions {
 	field: string;
-	type: ClientFilterOperator | 'required' | 'email';
+	type: ClientFilterOperator | 'required' | 'email' | 'phone';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
 	substring?: string;

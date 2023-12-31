@@ -23,6 +23,7 @@ jobs:
             pnpm \
             --filter @booseat/directus-app \
             --filter @booseat/directus-api \
+            --filter @booseat/directus-validation \
             --filter @booseat/directus \
             publish --no-git-checks
         env:

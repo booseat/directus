@@ -1,5 +1,5 @@
 {
-	"name": "@directus/validation",
+	"name": "@booseat/directus-validation",
 	"version": "0.0.10",
 	"type": "module",
 	"sideEffects": false,
