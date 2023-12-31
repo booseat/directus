@@ -242,6 +242,9 @@ importers:
       marked:
         specifier: 11.1.0
         version: 11.1.0
+      messagebird:
+        specifier: 4.0.1
+        version: 4.0.1
       micromustache:
         specifier: 8.0.3
         version: 8.0.3
@@ -12531,6 +12534,15 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
+  /messagebird@4.0.1:
+    resolution: {integrity: sha512-Abn0aoH1Dzsq5KMeI3LNanVETwu4+HvNXZrhWRGzRIJ9ea88sefsVfy98Qj4NDmxGuXLFmT8Lhgw1kStzu7F0g==}
+    engines: {node: '>=10.0.0'}
+    dependencies:
+      jose: 4.15.4
+      safe-buffer: 5.2.1
+      scmp: 2.1.0
+    dev: false
+
   /methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
@@ -15133,6 +15145,10 @@ packages:
     dependencies:
       xmlchars: 2.2.0
     dev: true
+
+  /scmp@2.1.0:
+    resolution: {integrity: sha512-o/mRQGk9Rcer/jEEw/yw4mwo3EU/NvYvp577/Btqrym9Qy5/MdWGBqipbALgd2lrdWTJ5/gqDusxfnQBxOxT2Q==}
+    dev: false
 
   /section-matter@1.0.0:
     resolution: {integrity: sha512-vfD3pmTzGpufjScBh50YHKzEu2lxBWhVEHsNGoEXmCmn2hKGfeNLYMzCJpe8cD7gqX7TJluOVpBkAequ6dgMmA==}

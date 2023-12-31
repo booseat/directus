@@ -17,6 +17,7 @@ import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { toBoolean } from '../utils/to-boolean.js';
 import { SettingsService } from './settings.js';
+import getSmsSender from '../sms/sms-sender.js';
 
 const env = useEnv();
 
@@ -128,7 +129,7 @@ export class ServerService {
 		};
 
 		type HealthCheck = {
-			componentType: 'system' | 'datastore' | 'objectstore' | 'email' | 'cache' | 'ratelimiter';
+			componentType: 'system' | 'datastore' | 'objectstore' | 'email' | 'cache' | 'ratelimiter' | 'sms';
 			observedValue?: number | string | boolean;
 			observedUnit?: string;
 			status: 'ok' | 'warn' | 'error';
@@ -148,6 +149,7 @@ export class ServerService {
 					testRateLimiterGlobal(),
 					testStorage(),
 					testEmail(),
+					testSms(),
 				])),
 			),
 		};
@@ -432,6 +434,28 @@ export class ServerService {
 			} catch (err: any) {
 				checks['email:connection']![0]!.status = 'error';
 				checks['email:connection']![0]!.output = err;
+			}
+
+			return checks;
+		}
+
+		async function testSms(): Promise<Record<string, HealthCheck[]>> {
+			const checks: Record<string, HealthCheck[]> = {
+				'sms:connection': [
+					{
+						status: 'ok',
+						componentType: 'sms',
+					},
+				],
+			};
+
+			const mailer = getSmsSender();
+
+			try {
+				await mailer.verify();
+			} catch (err: any) {
+				checks['sms:connection']![0]!.status = 'error';
+				checks['sms:connection']![0]!.output = err;
 			}
 
 			return checks;
