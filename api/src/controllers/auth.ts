@@ -230,4 +230,39 @@ router.get(
 	respond,
 );
 
+router.post(
+	'/otp/request',
+	asyncHandler(async (req, _res, next) => {
+		if (typeof req.body.phone_number !== 'string') {
+			throw new InvalidPayloadError({ reason: `"phone_number" field is required` });
+		}
+
+		const accountability: Accountability = {
+			ip: getIPFromReq(req),
+			role: null,
+		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
+
+		const service = new UsersService({ accountability, schema: req.schema });
+
+		try {
+			await service.requestOneTimePassword(req.body.phone_number);
+			return next();
+		} catch (err: any) {
+			if (isDirectusError(err, ErrorCode.InvalidPayload)) {
+				throw err;
+			} else {
+				logger.warn(err, `[phone_number] ${err}`);
+				return next();
+			}
+		}
+	}),
+	respond,
+);
+
 export default router;

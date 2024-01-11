@@ -16,6 +16,9 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+import { SmsService } from './sms.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { TranslationsService } from './translations.js';
 
 const env = useEnv();
 
@@ -177,9 +180,28 @@ export class UsersService extends ItemsService {
 		email: string,
 	): Promise<{ id: string; role: string; status: string; password: string; email: string }> {
 		return await this.knex
-			.select('id', 'role', 'status', 'password', 'email', 'phone_number')
+			.select('id', 'role', 'status', 'password', 'email')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
+			.first();
+	}
+
+	/**
+	 * Get basic information of user identified by phone number
+	 */
+	private async getUserByPhoneNumber(phoneNumber: string): Promise<{
+		id: string;
+		role: string;
+		status: string;
+		password: string;
+		email: string;
+		phoneNumber: string;
+		defaultLanguage: string;
+	}> {
+		return await this.knex
+			.select('id', 'role', 'status', 'password', 'email', 'phone_number', 'default_language')
+			.from('directus_users')
+			.whereRaw(`?? = ?`, ['phone_number', phoneNumber])
 			.first();
 	}
 
@@ -582,5 +604,46 @@ export class UsersService extends ItemsService {
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' }, opts);
+	}
+
+	async requestOneTimePassword(phoneNumber: string): Promise<void> {
+		const smsService = new SmsService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const translationsService = new TranslationsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		let otp = '';
+
+		for (let i = 0; i < 4; i++) {
+			otp += Math.floor(Math.random() * 10);
+		}
+
+		const user = await this.getUserByPhoneNumber(phoneNumber);
+
+
+		await this.knex('directus_users')
+		.update({
+			sms_one_time_password: otp,
+			sms_one_time_password_expire: new Date(Date.now() + getMilliseconds(env['SMS_OTP_TTL'], 0)),
+		})
+		.where({ id: user.id });
+
+		const translation = await translationsService.readyOneByLanguageAndKey(user.defaultLanguage, 'otp_sms');
+		const projectName = env['PROJECT_NAME'];
+
+		let otpMessage = `Your verification code ${projectName} is ${otp}`;
+
+		if (translation != null) {
+			otpMessage = translation.value.replace('{{otp}}', otp);
+			otpMessage = otpMessage.replace('{{projectName}}', projectName );
+		}
+
+		smsService.send([phoneNumber], otpMessage);
 	}
 }
