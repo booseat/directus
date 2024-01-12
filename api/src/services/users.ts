@@ -270,20 +270,9 @@ export class UsersService extends ItemsService {
 	 * Create multiple new users
 	 */
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const usersToCreateFromEmail = data['map']((payload) => payload).filter(
-			(payload) => payload['email'] && payload['password'],
-		);
-
-		const emails = usersToCreateFromEmail['map']((payload) => payload['email']).filter((email) => email);
-		const passwords = usersToCreateFromEmail['map']((payload) => payload['password']).filter((password) => password);
-
-		const usersToCreateFromPhoneNumber = data['map']((payload) => payload).filter(
-			(payload) => !payload['email'] && payload['phone_number'],
-		);
-
-		const phoneNumbers = usersToCreateFromPhoneNumber['map']((payload) => payload['phone_number']).filter(
-			(phoneNumber) => phoneNumber,
-		);
+		const emails = data['map']((payload) => payload['email']).filter((email) => email);
+		const passwords = data['map']((payload) => payload['password']).filter((password) => password);
+		const phoneNumbers = data['map']((payload) => payload['phone_number']).filter((phoneNumber) => phoneNumber);
 
 		try {
 			if (emails.length) {
@@ -375,6 +364,18 @@ export class UsersService extends ItemsService {
 
 				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']], keys[0]);
+			}
+
+			if (data['phone_number']) {
+				if (keys.length > 1) {
+					throw new RecordNotUniqueError({
+						collection: 'directus_users',
+						field: 'phone_number',
+					});
+				}
+
+				this.validatePhoneNumber(data['phone_number']);
+				await this.checkUniquePhoneNumbers([data['phone_number']], keys[0]);
 			}
 
 			if (data['password']) {
