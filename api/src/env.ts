@@ -178,6 +178,8 @@ const allowedEnvironmentVars = [
 	// synchronization
 	'SYNCHRONIZATION_STORE',
 	'SYNCHRONIZATION_NAMESPACE',
+	// sms
+	'SMS_OTP_TTL',
 	// emails
 	'EMAIL_FROM',
 	'EMAIL_TRANSPORT',
@@ -290,6 +292,9 @@ export const defaults: Record<string, any> = {
 	EXTENSIONS_AUTO_RELOAD: false,
 	EXTENSIONS_SANDBOX_MEMORY: 100,
 	EXTENSIONS_SANDBOX_TIMEOUT: 1000,
+
+	SMS_VERIFY_SETUP: true,
+	SMS_OTP_TTL: '15m',
 
 	EMAIL_FROM: 'no-reply@example.com',
 	EMAIL_VERIFY_SETUP: true,
