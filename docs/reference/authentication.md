@@ -478,6 +478,91 @@ const result = await client.request(passwordRequest('admin@example.com'));
 </template>
 </SnippetToggler>
 
+## Request One time password sms
+
+Request a one time password sms to be sent to the given user.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /auth/otp/request`
+
+```json
+{
+	"phone_number": user_phone_number
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_otp_request(phone_number: "user_phone_number")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, otpRequest } from '@booseat/directus-sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(otpRequest(user_phone_number));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`phone_number` **Required**\
+Phone number of the user you're requesting a one time password.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /auth/password/request`
+
+```json
+{
+	"phone_number": "+2250102030405"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_password_request(phone_number: "+2250102030405")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, passwordRequest } from '@booseat/directus-sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordRequest('+2250102030405'));
+```
+
+</template>
+</SnippetToggler>
+
 ## Reset a Password
 
 The request a password reset endpoint sends an email with a link to the admin app (or a custom route) which in turn uses

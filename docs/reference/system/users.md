@@ -23,6 +23,9 @@ Last name of the user.
 `email` **string**\
 Email address of the user.
 
+`phone_number` **string**\
+Phone number of the user.
+
 `password` **hash**\
 Password of the user.
 
@@ -71,6 +74,12 @@ Role of the user. Many-to-one to [roles](/reference/system/roles).
 
 `token` **string**\
 Static access token for the user.
+
+`sms_one_time_password` **string**\
+Last otp sent to user for authentication with phone number.
+
+`sms_one_time_password_expire` **string**\
+Expiration date of last otp sent to user for authentication with phone number.
 
 `last_access` **date**\
 Last time the user accessed the API.
@@ -504,7 +513,7 @@ Supports all [global query parameters](/reference/query).
 
 A partial [user object](#the-user-object).
 
-`email` and `password` are required to authenticate with the default authentication provider.
+`email` and `password` are only required to authenticate with the default authentication provider. `phone_number` is only required to authenticate with the phone authentication provider.
 
 ### Response
 
@@ -618,7 +627,7 @@ Supports all [global query parameters](/reference/query).
 
 An array of partial [user objects](#the-user-object).
 
-`email` and `password` are required.
+`email` and `password` are only required to authenticate with the default authentication provider. `phone_number` is only required to authenticate with the phone authentication provider.
 
 ### Response
 

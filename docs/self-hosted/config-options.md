@@ -942,6 +942,20 @@ and then loaded from there.
 | `SYNCHRONIZATION_STORE`     | One of `memory`, `redis`<sup>[1]</sup> | `memory`        |
 | `SYNCHRONIZATION_NAMESPACE` | How to scope the channels in Redis     | `directus-sync` |
 
+## SMS
+
+| Variable             		| Description                                                                          | Default Value          |
+| -------------------------	| ------------------------------------------------------------------------------------ | ---------------------- |
+| `SMS_VERIFY_SETUP` 		| Check if sms setup is properly configured.                                       	   | `true`                 |
+| `SMS_GATEWAY` 			| What to use to send sms. One of `messagebird`.                                       | `messagebird`          |
+| `SMS_OTP_TTL`   			| The duration that the otp sent by sms is valid.                                      | `15m` 					|
+
+### Messagebird (`messagebird`)
+
+| Variable             		| Description                                                                          | Default Value          |
+| -------------------------	| ------------------------------------------------------------------------------------ | ---------------------- |
+| `SMS_MESSAGEBIRD_TOKEN`   | Messagebird token                                            						   | --						|
+
 ## Email
 
 | Variable             | Description                                                                          | Default Value          |
