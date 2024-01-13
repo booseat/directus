@@ -196,10 +196,10 @@ export class UsersService extends ItemsService {
 		password: string;
 		email: string;
 		phoneNumber: string;
-		defaultLanguage: string;
+		language: string;
 	}> {
 		return await this.knex
-			.select('id', 'role', 'status', 'password', 'email', 'phone_number', 'default_language')
+			.select('id', 'role', 'status', 'password', 'email', 'phone_number', 'language')
 			.from('directus_users')
 			.whereRaw(`?? = ?`, ['phone_number', phoneNumber])
 			.first();
@@ -635,7 +635,7 @@ export class UsersService extends ItemsService {
 		})
 		.where({ id: user.id });
 
-		const translation = await translationsService.readyOneByLanguageAndKey(user.defaultLanguage, 'otp_sms');
+		const translation = await translationsService.readyOneByLanguageAndKey(user.language, 'otp_sms');
 		const projectName = env['PROJECT_NAME'];
 
 		let otpMessage = `Your verification code ${projectName} is ${otp}`;

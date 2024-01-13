@@ -1,7 +1,6 @@
 import { initClient, type MessageBird } from 'messagebird';
 import type SmsGateway from '../gateway.js';
 
-
 export default class MessagebirdGateway implements SmsGateway {
 	private client: MessageBird;
 
@@ -10,7 +9,7 @@ export default class MessagebirdGateway implements SmsGateway {
 	}
 
 	send(sender: string, recipients: string[], message: string): Promise<any> {
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			this.client.messages.create(
 				{
 					originator: sender,
@@ -18,7 +17,7 @@ export default class MessagebirdGateway implements SmsGateway {
 					body: message,
 				},
 				function (err, response) {
-					if (err) throw err;
+					if (err) reject(err);
 					else resolve(response);
 				},
 			);
@@ -26,10 +25,10 @@ export default class MessagebirdGateway implements SmsGateway {
 	}
 
 	verify(): Promise<true> {
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			this.client.balance.read(function (err) {
-				if (err) throw err;
-				else resolve(true)
+				if (err) reject(err);
+				else resolve(true);
 			});
 		});
 	}

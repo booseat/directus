@@ -297,7 +297,14 @@ EXTENSIONS_AUTO_RELOAD=false
 ####################################################################################################
 ### Sms
 # The duration that the otp sent by sms is valid. [15m]
-SMS_OTP_TTL: '15m'
+SMS_OTP_TTL='15m'
+
+# What to use to send sms. One of
+# messagebird.
+SMS_GATEWAY='messagebird'
+
+## Sms gateway (Messagebird)
+# SMS_MESSAGEBIRD_TOKEN=''
 
 ####################################################################################################
 ### Email

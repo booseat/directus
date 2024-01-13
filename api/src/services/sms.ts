@@ -31,7 +31,12 @@ export class SmsService {
 		}
 	}
 
-	async send(recipients: string[], message: string) {
-		return await this.smsSender.send(env['PROJECT_NAME'], recipients, message);
+	async send(recipients: string[], message: string): Promise<void> {
+		try {
+			await this.smsSender.send(env['PROJECT_NAME'], recipients, message);
+		} catch (err: any) {
+			logger.warn(`Sms sending failed:`);
+			logger.warn(err);
+		}
 	}
 }
