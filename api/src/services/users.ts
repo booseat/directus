@@ -19,6 +19,7 @@ import { SettingsService } from './settings.js';
 import { SmsService } from './sms.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { TranslationsService } from './translations.js';
+import { generateHash } from '../utils/generate-hash.js';
 
 const env = useEnv();
 
@@ -619,30 +620,37 @@ export class UsersService extends ItemsService {
 			schema: this.schema,
 		});
 
+		const settingsService = new SettingsService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
 		let otp = '';
 
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < 6; i++) {
 			otp += Math.floor(Math.random() * 10);
 		}
 
 		const user = await this.getUserByPhoneNumber(phoneNumber);
 
-
 		await this.knex('directus_users')
-		.update({
-			sms_one_time_password: otp,
-			sms_one_time_password_expire: new Date(Date.now() + getMilliseconds(env['SMS_OTP_TTL'], 0)),
-		})
-		.where({ id: user.id });
+			.update({
+				sms_one_time_password: await generateHash(otp),
+				sms_one_time_password_expire: new Date(Date.now() + getMilliseconds(env['SMS_OTP_TTL'], 0)),
+			})
+			.where({ id: user.id });
 
 		const translation = await translationsService.readyOneByLanguageAndKey(user.language, 'otp_sms');
-		const projectName = env['PROJECT_NAME'];
 
-		let otpMessage = `Your verification code ${projectName} is ${otp}`;
+		const project = await settingsService.readSingleton({
+			fields: ['project_name'],
+		});
+
+		let otpMessage = `Your ${project['project_name']} verification code is ${otp}`;
 
 		if (translation != null) {
 			otpMessage = translation.value.replace('{{otp}}', otp);
-			otpMessage = otpMessage.replace('{{projectName}}', projectName );
+			otpMessage = otpMessage.replace('{{projectName}}', project['project_name']);
 		}
 
 		smsService.send([phoneNumber], otpMessage);

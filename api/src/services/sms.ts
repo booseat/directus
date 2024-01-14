@@ -6,6 +6,7 @@ import type { AbstractServiceOptions } from '../types/services.js';
 import getSmsSender from '../sms/sms-sender.js';
 import { useEnv } from '../env.js';
 import logger from '../logger.js';
+import { SettingsService } from './settings.js';
 
 const env = useEnv();
 
@@ -32,8 +33,18 @@ export class SmsService {
 	}
 
 	async send(recipients: string[], message: string): Promise<void> {
+		const settingsService = new SettingsService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const project = await settingsService.readSingleton({
+			fields: ['project_name'],
+		});
+
 		try {
-			await this.smsSender.send(env['PROJECT_NAME'], recipients, message);
+			const response = await this.smsSender.send(project['project_name'], recipients, message);
+			logger.debug(response);
 		} catch (err: any) {
 			logger.warn(`Sms sending failed:`);
 			logger.warn(err);
