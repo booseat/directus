@@ -3,7 +3,6 @@ import { useData, useRoute } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import { computed } from 'vue';
 import Feedback from '../components/Feedback.vue';
-import Newsletter from '../components/Newsletter.vue';
 
 const { Layout } = DefaultTheme;
 const { page } = useData();
@@ -25,9 +24,6 @@ const isPackagePage = RegExp('^/packages/.+$').test(path.value);
 					.
 				</p>
 			</div>
-		</template>
-		<template #aside-outline-after>
-			<Newsletter class="newsletter" />
 		</template>
 		<template #doc-footer-before>
 			<Feedback v-if="!isPackagePage" :url="path" :title="title" />

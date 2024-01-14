@@ -39,7 +39,7 @@ Copy and paste the following and save the file as `docker-compose.yml`:
 version: "3"
 services:
   directus:
-    image: directus/directus:{{ packages.directus.version.full }}
+    image: directus/directus:{{ packages['@booseat/directus'].version.full }}
     ports:
       - 8055:8055
     volumes:

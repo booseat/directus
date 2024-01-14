@@ -133,7 +133,7 @@ gtag('config', 'UA-24637628-7');
 			light: '/logo-light.svg',
 			dark: '/logo-dark.svg',
 		},
-		socialLinks: [{ icon: 'github', link: 'https://github.com/directus/directus' }],
+		socialLinks: [{ icon: 'github', link: 'https://github.com/booseat/directus' }],
 		nav: [
 			{
 				text: 'Developer Reference',
@@ -146,8 +146,6 @@ gtag('config', 'UA-24637628-7');
 				link: '/user-guide/overview/data-studio-app',
 				activeMatch: '/user-guide',
 			},
-			{ text: 'Website', link: 'https://directus.io/' },
-			{ text: 'Cloud', link: 'https://directus.cloud/' },
 		],
 		algolia: {
 			appId: 'T5BDNEU205',

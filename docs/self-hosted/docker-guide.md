@@ -24,9 +24,9 @@ just getting started, check out our [Self-Hosting Quickstart](/self-hosted/quick
 
 To stick to a more specific version of Directus you can use one of the following tags:
 
-- Full version, e.g. `{{ packages.directus.version.full }}`
-- Minor releases, e.g. `{{ packages.directus.version.minor }}`
-- Major releases, e.g. `{{ packages.directus.version.major }}`
+- Full version, e.g. `{{ packages['@booseat/directus'].version.full }}`
+- Minor releases, e.g. `{{ packages['@booseat/directus'].version.minor }}`
+- Major releases, e.g. `{{ packages['@booseat/directus'].version.major }}`
 
 It is recommended to explicitly specify a Directus version in your `docker-compose.yml` file. Include the version number
 in your `services.directus.image` value:
@@ -35,7 +35,7 @@ in your `services.directus.image` value:
 services:
   directus:
     image: directus/directus:latest // [!code --]
-    image: directus/directus:{{ packages.directus.version.full }} // [!code ++]
+    image: directus/directus:{{ packages['@booseat/directus'].version.full }} // [!code ++]
 ```
 
 ## Configure Admin User
@@ -101,7 +101,7 @@ services:
     image: redis:6
 
   directus:
-    image: directus/directus:{{ packages.directus.version.full }}
+    image: directus/directus:{{ packages['@booseat/directus'].version.full }}
     ports:
       - 8055:8055
     volumes:
@@ -144,8 +144,8 @@ If you are not using the `latest` tag for the Directus image you need to adjust 
 increment the tag version number, e.g.:
 
 ```diff-vue
--   image: directus/directus:{{ packages.directus.version.major }}.0.0
-+   image: directus/directus:{{ packages.directus.version.full }}
+-   image: directus/directus:{{ packages['@booseat/directus'].version.major }}.0.0
++   image: directus/directus:{{ packages['@booseat/directus'].version.full }}
 ```
 
 Then run the following from your docker-compose root:
