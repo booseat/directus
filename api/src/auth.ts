@@ -6,6 +6,7 @@ import {
 	LocalAuthDriver,
 	OAuth2AuthDriver,
 	OpenIDAuthDriver,
+	PhoneAuthDriver,
 	SAMLAuthDriver,
 } from './auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER } from './constants.js';
@@ -91,6 +92,9 @@ function getProviderInstance(
 
 		case 'saml':
 			return new SAMLAuthDriver(options, config);
+
+		case 'phone':
+			return new PhoneAuthDriver(options, config);
 	}
 
 	return undefined;

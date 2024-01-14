@@ -77,6 +77,8 @@ export class AuthenticationService {
 				'u.provider',
 				'u.external_identifier',
 				'u.auth_data',
+				'sms_one_time_password',
+				'sms_one_time_password_expire',
 			)
 			.from('directus_users as u')
 			.leftJoin('directus_roles as r', 'u.role', 'r.id')
