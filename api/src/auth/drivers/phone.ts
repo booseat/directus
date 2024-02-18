@@ -41,6 +41,13 @@ export class PhoneAuthDriver extends AuthDriver {
 			!(await argon2.verify(user.sms_one_time_password, password as string))
 		) {
 			throw new InvalidCredentialsError();
+		} else {
+			await this.knex('directus_users')
+				.update({
+					sms_one_time_password: null,
+					sms_one_time_password_expire: null,
+				})
+				.where({ id: user.id });
 		}
 	}
 
