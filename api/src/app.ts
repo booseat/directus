@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
@@ -209,7 +209,7 @@ export default async function createApp(): Promise<express.Application> {
 	});
 
 	if (env['SERVE_APP']) {
-		const adminPath = require.resolve('@directus/app');
+		const adminPath = require.resolve('@booseat/directus-app');
 		const adminUrl = new Url(env['PUBLIC_URL'] as string).addPath('admin');
 
 		const embeds = extensionManager.getEmbeds();

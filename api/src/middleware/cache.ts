@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { RequestHandler } from 'express';
 import { getCache, getCacheValue } from '../cache.js';
 import { useLogger } from '../logger.js';

@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { StorageManager } from '@directus/storage';
 import { toArray } from '@directus/utils';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';

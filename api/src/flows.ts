@@ -1,5 +1,5 @@
 import { Action } from '@directus/constants';
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';

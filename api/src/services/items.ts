@@ -1,5 +1,5 @@
 import { Action } from '@directus/constants';
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type Keyv from 'keyv';

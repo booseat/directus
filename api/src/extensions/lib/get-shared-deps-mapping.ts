@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { resolvePackage } from '@directus/utils/node';
 import { escapeRegExp } from 'lodash-es';
 import { readdir } from 'node:fs/promises';
@@ -14,7 +14,7 @@ export const getSharedDepsMapping = async (deps: string[]): Promise<Record<strin
 	const env = useEnv();
 	const logger = useLogger();
 
-	const appDir = await readdir(path.join(resolvePackage('@directus/app', __dirname), 'dist', 'assets'));
+	const appDir = await readdir(path.join(resolvePackage('@booseat/directus-app', __dirname), 'dist', 'assets'));
 	const depsMapping: Record<string, string> = {};
 
 	for (const dep of deps) {

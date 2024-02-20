@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { isInstalled, validateMigrations } from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { useLogger } from '../logger.js';

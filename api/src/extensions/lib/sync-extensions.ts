@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { NESTED_EXTENSION_TYPES } from '@directus/extensions';
 import { ensureExtensionDirs } from '@directus/extensions/node';
 import mid from 'node-machine-id';

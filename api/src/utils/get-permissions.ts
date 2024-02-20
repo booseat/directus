@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { Accountability, Permission, SchemaOverview } from '@directus/types';
 import { deepMap, parseFilter, parseJSON, parsePreset } from '@directus/utils';
 import { cloneDeep } from 'lodash-es';

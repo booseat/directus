@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { Notification } from '@directus/types';
 import { useLogger } from '../logger.js';
 import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';

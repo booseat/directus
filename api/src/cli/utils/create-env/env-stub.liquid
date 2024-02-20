@@ -270,6 +270,12 @@ CORS_MAX_AGE=18000
 
 # A comma-separated list of auth providers []
 AUTH_PROVIDERS=""
+
+# AUTH_PROVIDERS="phone"
+# AUTH_PHONE_DRIVER="phone"
+# AUTH_PHONE_ICON="call"
+# AUTH_PHONE_LABEL="Phone"
+
 # AUTH_PROVIDERS="github"
 
 # AUTH_GITHUB_DRIVER="oauth2"
@@ -293,6 +299,18 @@ EXTENSIONS_PATH="./extensions"
 
 # Automatically reload extensions when they have changed [false]
 EXTENSIONS_AUTO_RELOAD=false
+
+####################################################################################################
+### Sms
+# The duration that the otp sent by sms is valid. [15m]
+SMS_OTP_TTL='15m'
+
+# What to use to send sms. One of
+# messagebird.
+SMS_GATEWAY='messagebird'
+
+## Sms gateway (Messagebird)
+# SMS_MESSAGEBIRD_TOKEN=''
 
 ####################################################################################################
 ### Email

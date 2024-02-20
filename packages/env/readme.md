@@ -1,4 +1,4 @@
-# @directus/env
+# @booseat/directus-env
 
 Environment variable configuration extraction for Directus.
 

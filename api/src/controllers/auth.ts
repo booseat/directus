@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { Router } from 'express';
@@ -8,6 +8,7 @@ import {
 	createOAuth2AuthRouter,
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
+	createPhoneAuthRouter,
 } from '../auth/drivers/index.js';
 import { COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { useLogger } from '../logger.js';
@@ -46,6 +47,10 @@ for (const authProvider of authProviders) {
 
 		case 'saml':
 			authRouter = createSAMLAuthRouter(authProvider.name);
+			break;
+
+		case 'phone':
+			authRouter = createPhoneAuthRouter(authProvider.name);
 			break;
 	}
 
@@ -222,6 +227,41 @@ router.get(
 		};
 
 		return next();
+	}),
+	respond,
+);
+
+router.post(
+	'/otp/request',
+	asyncHandler(async (req, _res, next) => {
+		if (typeof req.body.phone_number !== 'string') {
+			throw new InvalidPayloadError({ reason: `"phone_number" field is required` });
+		}
+
+		const accountability: Accountability = {
+			ip: getIPFromReq(req),
+			role: null,
+		};
+
+		const userAgent = req.get('user-agent');
+		if (userAgent) accountability.userAgent = userAgent;
+
+		const origin = req.get('origin');
+		if (origin) accountability.origin = origin;
+
+		const service = new UsersService({ accountability, schema: req.schema });
+
+		try {
+			await service.requestOneTimePassword(req.body.phone_number);
+			return next();
+		} catch (err: any) {
+			if (isDirectusError(err, ErrorCode.InvalidPayload)) {
+				throw err;
+			} else {
+				logger.warn(err, `[phone_number] ${err}`);
+				return next();
+			}
+		}
 	}),
 	respond,
 );

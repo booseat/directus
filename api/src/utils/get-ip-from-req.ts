@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { Request } from 'express';
 import { isIP } from 'net';
 import { useLogger } from '../logger.js';

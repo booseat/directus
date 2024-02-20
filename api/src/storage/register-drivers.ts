@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { StorageManager } from '@directus/storage';
 import { getStorageDriver } from './get-storage-driver.js';
 

@@ -1,5 +1,5 @@
-import { useEnv } from '@directus/env';
-import { version } from 'directus/version';
+import { useEnv } from '@booseat/directus-env';
+import { version } from '@booseat/directus/version';
 import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getItemCount } from '../utils/get-item-count.js';

@@ -1,7 +1,7 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
-import { version } from 'directus/version';
+import { version } from '@booseat/directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
 import { Readable } from 'node:stream';
@@ -16,6 +16,7 @@ import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { SettingsService } from './settings.js';
+import getSmsSender from '../sms/sms-sender.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -129,7 +130,7 @@ export class ServerService {
 		};
 
 		type HealthCheck = {
-			componentType: 'system' | 'datastore' | 'objectstore' | 'email' | 'cache' | 'ratelimiter';
+			componentType: 'system' | 'datastore' | 'objectstore' | 'email' | 'cache' | 'ratelimiter' | 'sms';
 			observedValue?: number | string | boolean;
 			observedUnit?: string;
 			status: 'ok' | 'warn' | 'error';
@@ -149,6 +150,7 @@ export class ServerService {
 					testRateLimiterGlobal(),
 					testStorage(),
 					testEmail(),
+					testSms(),
 				])),
 			),
 		};
@@ -433,6 +435,28 @@ export class ServerService {
 			} catch (err: any) {
 				checks['email:connection']![0]!.status = 'error';
 				checks['email:connection']![0]!.output = err;
+			}
+
+			return checks;
+		}
+
+		async function testSms(): Promise<Record<string, HealthCheck[]>> {
+			const checks: Record<string, HealthCheck[]> = {
+				'sms:connection': [
+					{
+						status: 'ok',
+						componentType: 'sms',
+					},
+				],
+			};
+
+			const mailer = getSmsSender();
+
+			try {
+				await mailer.verify();
+			} catch (err: any) {
+				checks['sms:connection']![0]!.status = 'error';
+				checks['sms:connection']![0]!.output = err;
 			}
 
 			return checks;

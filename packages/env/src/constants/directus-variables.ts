@@ -158,6 +158,9 @@ export const DIRECTUS_VARIABLES = [
 	// synchronization
 	'SYNCHRONIZATION_STORE',
 	'SYNCHRONIZATION_NAMESPACE',
+	// sms
+	'SMS_OTP_TTL',
+	'SMS_GATEWAY',
 	// emails
 	'EMAIL_FROM',
 	'EMAIL_TRANSPORT',

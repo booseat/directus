@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';

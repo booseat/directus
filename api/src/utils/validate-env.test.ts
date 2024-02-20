@@ -1,10 +1,10 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { Logger } from 'pino';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 import { useLogger } from '../logger.js';
 import { validateEnv } from './validate-env.js';
 
-vi.mock('@directus/env');
+vi.mock('@booseat/directus-env');
 
 vi.mock('../logger');
 

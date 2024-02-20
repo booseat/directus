@@ -1,5 +1,5 @@
 import * as validator from '@authenio/samlify-node-xmllint';
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusError } from '@directus/errors';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';

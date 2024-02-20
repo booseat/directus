@@ -1,5 +1,5 @@
 import { Action } from '@directus/constants';
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import {
 	InvalidCredentialsError,
 	InvalidOtpError,
@@ -83,6 +83,8 @@ export class AuthenticationService {
 				'u.provider',
 				'u.external_identifier',
 				'u.auth_data',
+				'sms_one_time_password',
+				'sms_one_time_password_expire',
 			)
 			.from('directus_users as u')
 			.leftJoin('directus_roles as r', 'u.role', 'r.id')
@@ -336,11 +338,14 @@ export class AuthenticationService {
 				first_name: record.user_first_name,
 				last_name: record.user_last_name,
 				email: record.user_email,
+				phone_number: record.user_phone_number,
 				password: record.user_password,
 				status: record.user_status,
 				provider: record.user_provider,
 				external_identifier: record.user_external_identifier,
 				auth_data: record.user_auth_data,
+				sms_one_time_password: record.user_sms_one_time_password,
+				sms_one_time_password_expire: record.user_sms_one_time_password_expire,
 				role: record.role_id,
 				app_access: record.role_app_access,
 				admin_access: record.role_admin_access,

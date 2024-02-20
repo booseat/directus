@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
 import type { Range } from '@directus/storage';
 import { parseJSON } from '@directus/utils';

@@ -44,4 +44,12 @@ export class TranslationsService extends ItemsService {
 
 		return await super.updateMany(keys, data, opts);
 	}
+
+	async readyOneByLanguageAndKey(language: string, key: string): Promise<{ language: string; key: string; value: string }> {
+		return await this.knex
+			.select('language', 'key', 'value')
+			.from('directus_translations')
+			.whereRaw(`?? = ? AND ?? = ?`, ['language', language, 'key', key])
+			.first();
+	}
 }

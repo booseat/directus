@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { toArray } from '@directus/utils';
 import { constants } from 'fs';
 import { access } from 'node:fs/promises';

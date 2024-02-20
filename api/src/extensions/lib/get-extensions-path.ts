@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { join } from 'path';
 
 export const getExtensionsPath = () => {

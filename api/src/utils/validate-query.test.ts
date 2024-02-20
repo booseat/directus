@@ -1,7 +1,7 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-vi.mock('@directus/env');
+vi.mock('@booseat/directus-env');
 
 beforeEach(() => {
 	vi.resetModules();

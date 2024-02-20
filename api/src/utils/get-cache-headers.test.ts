@@ -1,9 +1,9 @@
 import type { Request } from 'express';
 import { describe, expect, test, vi } from 'vitest';
 import { getCacheControlHeader } from './get-cache-headers.js';
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 
-vi.mock('@directus/env');
+vi.mock('@booseat/directus-env');
 
 const scenarios = [
 	// Test the cache-control header

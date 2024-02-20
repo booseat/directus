@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { useLogger } from '../logger.js';
 
 export function validateEnv(requiredKeys: string[]): void {

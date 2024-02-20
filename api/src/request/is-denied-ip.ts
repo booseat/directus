@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import os from 'node:os';
 import { useLogger } from '../logger.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';

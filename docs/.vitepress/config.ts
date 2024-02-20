@@ -133,15 +133,21 @@ gtag('config', 'UA-24637628-7');
 			light: '/logo-light.svg',
 			dark: '/logo-dark.svg',
 		},
-		socialLinks: [
-			{ icon: 'github', link: 'https://github.com/directus/directus' },
-			{ icon: 'twitter', link: 'https://twitter.com/directus' },
-			{ icon: 'discord', link: 'https://directus.chat' },
-		],
+		socialLinks: [{ icon: 'github', link: 'https://github.com/booseat/directus' }],
 		nav: [
+			{
+				text: 'Developer Reference',
+				link: '/getting-started/quickstart',
+				// Active on every path except for '/', '/user-guide', '/packages'
+				activeMatch: '^\\/(?!$|user-guide|packages).*',
+			},
+			{
+				text: 'User Guide',
+				link: '/user-guide/overview/data-studio-app',
+				activeMatch: '/user-guide',
+			},
 			{ text: 'Website', link: 'https://directus.io/' },
-			{ text: 'Cloud Dashboard', link: 'https://directus.cloud/' },
-			{ text: 'Directus TV', link: 'https://directus.io/tv' },
+			{ text: 'Cloud', link: 'https://directus.cloud/' },
 		],
 		algolia: {
 			appId: 'T5BDNEU205',

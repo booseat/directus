@@ -37,7 +37,7 @@ the request's Authorization Header.
 Authorization: Bearer <token>
 ```
 
-## Login
+## Login (Email)
 
 Retrieve a temporary access token and refresh token.
 
@@ -166,6 +166,118 @@ const result = await client.login('admin@example.com', 'd1r3ctu5');
 
 // login http request
 const result = await client.request(login('admin@example.com', 'd1r3ctu5'));
+```
+
+</template>
+</SnippetToggler>
+
+## Login (Phone number)
+
+Retrieve a temporary access token and refresh token.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /auth/login/phone`
+
+```json
+{
+	"phone_number": user_phone_number,
+	"password": user_sms_one_time_password
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_login(phone_number: "user_phone_number", password: "user_sms_one_time_password") {
+		access_token
+		refresh_token
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+// Not yet implemented.
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`phone_number` **Required**\
+Phone number of the user you're retrieving the access token for.
+
+`password` **Required**\
+One time password sent to the user.
+
+`mode`\
+Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` `secure` cookie. One of `json`, `cookie`.
+Defaults to `json`.
+
+### Response
+
+`access_token` **string**\
+Temporary access token to be used in follow-up requests.
+
+`expires` **integer**\
+How long before the access token will expire. Value is in milliseconds.
+
+`refresh_token` **string**\
+The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
+as the mode in the request, the refresh token won't be returned in the JSON.
+
+::: tip Expiry time
+
+The token's expiration time can be configured through
+[the `ACCESS_TOKEN_TTL` environment variable](/self-hosted/config-options#general).
+
+:::
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /auth/login/phone`
+
+
+```json
+{
+	"phone_number": "+2250102030405",
+	"password": "098765"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_login(phone_number: "+2250102030405", password: "098765") {
+		access_token
+		refresh_token
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+// Not yet implemented.
 ```
 
 </template>
@@ -473,6 +585,91 @@ import { createDirectus, rest, passwordRequest } from '@directus/sdk';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(passwordRequest('admin@example.com'));
+```
+
+</template>
+</SnippetToggler>
+
+## Request One Time Password SMS
+
+Request a one time password sms to be sent to the given user.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /auth/otp/request`
+
+```json
+{
+	"phone_number": user_phone_number
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_otp_request(phone_number: "user_phone_number")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, otpRequest } from '@booseat/directus-sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(otpRequest(user_phone_number));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`phone_number` **Required**\
+Phone number of the user you're requesting a one time password.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /auth/password/request`
+
+```json
+{
+	"phone_number": "+2250102030405"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	auth_password_request(phone_number: "+2250102030405")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, passwordRequest } from '@booseat/directus-sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(passwordRequest('+2250102030405'));
 ```
 
 </template>

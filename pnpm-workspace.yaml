@@ -2,7 +2,7 @@ packages:
   - directus
   - app
   - api
-  - docs
   - sdk
+  - docs
   - packages/*
   - tests/*

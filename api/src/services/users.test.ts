@@ -88,6 +88,7 @@ describe('Integration Tests', () => {
 		let superCreateManySpy: MockInstance;
 		let superUpdateManySpy: MockInstance;
 		let checkUniqueEmailsSpy: MockInstance;
+		let checkUniquePhoneNumbersSpy: MockInstance;
 		let checkPasswordPolicySpy: MockInstance;
 		let checkRemainingAdminExistenceSpy: MockInstance;
 		let checkRemainingActiveAdminSpy: MockInstance;
@@ -134,6 +135,10 @@ describe('Integration Tests', () => {
 				.spyOn(UsersService.prototype as any, 'checkUniqueEmails')
 				.mockImplementation(() => vi.fn());
 
+			checkUniquePhoneNumbersSpy = vi
+				.spyOn(UsersService.prototype as any, 'checkUniquePhoneNumbers')
+				.mockImplementation(() => vi.fn());
+
 			checkPasswordPolicySpy = vi
 				.spyOn(UsersService.prototype as any, 'checkPasswordPolicy')
 				.mockResolvedValue(() => vi.fn());
@@ -177,6 +182,16 @@ describe('Integration Tests', () => {
 				await service.createOne({ password: 'testpassword' });
 				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
 			});
+
+			it('should not checkUniquePhoneNumbers', async () => {
+				await service.createOne({});
+				expect(checkUniquePhoneNumbersSpy).not.toBeCalled();
+			});
+
+			it('should checkUniquePhoneNumbers once', async () => {
+				await service.createOne({phone_number: '+2250102030405'});
+				expect(checkUniquePhoneNumbersSpy).toBeCalledTimes(1);
+			});
 		});
 
 		describe('createMany', () => {
@@ -198,6 +213,16 @@ describe('Integration Tests', () => {
 			it('should checkPasswordPolicy once', async () => {
 				await service.createMany([{ password: 'testpassword' }]);
 				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
+			});
+
+			it('should not checkUniquePhoneNumbers', async () => {
+				await service.createMany([{}]);
+				expect(checkUniquePhoneNumbersSpy).not.toBeCalled();
+			});
+
+			it('should checkUniquePhoneNumbers once', async () => {
+				await service.createMany([{ phone_number: '+2250102030405' }]);
+				expect(checkUniquePhoneNumbersSpy).toBeCalledTimes(1);
 			});
 		});
 
@@ -236,6 +261,16 @@ describe('Integration Tests', () => {
 			it('should checkUniqueEmails once', async () => {
 				await service.updateOne(1, { email: 'test@example.com' });
 				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
+			});
+
+			it('should not checkUniquePhoneNumbers', async () => {
+				await service.updateOne(1, {});
+				expect(checkUniquePhoneNumbersSpy).not.toBeCalled();
+			});
+
+			it('should checkUniquePhoneNumbers once', async () => {
+				await service.updateOne(1, { phone_number: '+2250102030405' });
+				expect(checkUniquePhoneNumbersSpy).toBeCalledTimes(1);
 			});
 
 			it('should not checkPasswordPolicy', async () => {
@@ -352,6 +387,16 @@ describe('Integration Tests', () => {
 			it('should checkUniqueEmails once', async () => {
 				await service.updateMany([1], { email: 'test@example.com' });
 				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
+			});
+
+			it('should not checkUniquePhoneNumbers', async () => {
+				await service.updateMany([1], {});
+				expect(checkUniquePhoneNumbersSpy).not.toBeCalled();
+			});
+
+			it('should checkUniquePhoneNumbers once', async () => {
+				await service.updateMany([1], { phone_number: '+2250102030405' });
+				expect(checkUniquePhoneNumbersSpy).toBeCalledTimes(1);
 			});
 
 			it('should throw RecordNotUniqueError for multiple keys with same email', async () => {
@@ -481,6 +526,16 @@ describe('Integration Tests', () => {
 
 				await service.updateByQuery({}, { email: 'test@example.com' });
 				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
+			});
+
+			it('should not checkUniquePhoneNumbers', async () => {
+				await service.updateOne(1, {});
+				expect(checkUniquePhoneNumbersSpy).not.toBeCalled();
+			});
+
+			it('should checkUniquePhoneNumbers once', async () => {
+				await service.updateOne(1, { phone_number: '+2250102030405' });
+				expect(checkUniquePhoneNumbersSpy).toBeCalledTimes(1);
 			});
 
 			it('should throw RecordNotUniqueError for multiple keys with same email', async () => {

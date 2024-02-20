@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
 import { useLogger } from './logger.js';

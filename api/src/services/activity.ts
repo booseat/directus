@@ -1,5 +1,5 @@
 import { Action } from '@directus/constants';
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { uniq } from 'lodash-es';

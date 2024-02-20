@@ -1,8 +1,8 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import { getSimpleHash, toArray } from '@directus/utils';
-import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@booseat/directus-validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import { cloneDeep, isEmpty } from 'lodash-es';
@@ -16,6 +16,10 @@ import { Url } from '../utils/url.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
+import { SmsService } from './sms.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { TranslationsService } from './translations.js';
+import { generateHash } from '../utils/generate-hash.js';
 
 const env = useEnv();
 
@@ -59,6 +63,39 @@ export class UsersService extends ItemsService {
 			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
+			});
+		}
+	}
+
+	/**
+	 * User phone number has to be unique. This is an additional check to make sure that
+	 * the phone number is unique regardless of casing
+	 */
+	private async checkUniquePhoneNumbers(phoneNumbers: string[], excludeKey?: PrimaryKey): Promise<void> {
+		const duplicates = phoneNumbers.filter((value, index, array) => array.indexOf(value) !== index);
+
+		if (duplicates.length) {
+			throw new RecordNotUniqueError({
+				collection: 'directus_users',
+				field: 'phone_number',
+			});
+		}
+
+		const query = this.knex
+			.select('phone_number')
+			.from('directus_users')
+			.whereRaw(`?? IN (${phoneNumbers.map(() => '?')})`, ['phone_number', ...phoneNumbers]);
+
+		if (excludeKey) {
+			query.whereNot('id', excludeKey);
+		}
+
+		const results = await query;
+
+		if (results.length) {
+			throw new RecordNotUniqueError({
+				collection: 'directus_users',
+				field: 'phone_number',
 			});
 		}
 	}
@@ -151,6 +188,25 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Get basic information of user identified by phone number
+	 */
+	private async getUserByPhoneNumber(phoneNumber: string): Promise<{
+		id: string;
+		role: string;
+		status: string;
+		password: string;
+		email: string;
+		phoneNumber: string;
+		language: string;
+	}> {
+		return await this.knex
+			.select('id', 'role', 'status', 'password', 'email', 'phone_number', 'language')
+			.from('directus_users')
+			.whereRaw(`?? = ?`, ['phone_number', phoneNumber])
+			.first();
+	}
+
+	/**
 	 * Create url for inviting users
 	 */
 	private inviteUrl(email: string, url: string | null): string {
@@ -184,6 +240,26 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Validate array of phone numbers. Intended to be used with create/update users
+	 */
+	private validatePhoneNumber(input: string | string[]) {
+		const phoneNumbers = Array.isArray(input) ? input : [input];
+
+		const schema = Joi.string().pattern(new RegExp('^\\+[1-9]\\d{1,14}$')).required();
+
+		for (const phoneNumber of phoneNumbers) {
+			const { error } = schema.validate(phoneNumber);
+
+			if (error) {
+				throw new FailedValidationError({
+					field: 'phone_number',
+					type: 'phone',
+				});
+			}
+		}
+	}
+
+	/**
 	 * Create a new user
 	 */
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -197,6 +273,7 @@ export class UsersService extends ItemsService {
 	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const emails = data['map']((payload) => payload['email']).filter((email) => email);
 		const passwords = data['map']((payload) => payload['password']).filter((password) => password);
+		const phoneNumbers = data['map']((payload) => payload['phone_number']).filter((phoneNumber) => phoneNumber);
 
 		try {
 			if (emails.length) {
@@ -206,6 +283,11 @@ export class UsersService extends ItemsService {
 
 			if (passwords.length) {
 				await this.checkPasswordPolicy(passwords);
+			}
+
+			if (phoneNumbers.length) {
+				this.validatePhoneNumber(phoneNumbers);
+				await this.checkUniquePhoneNumbers(phoneNumbers);
 			}
 		} catch (err: any) {
 			(opts || (opts = {})).preMutationError = err;
@@ -294,6 +376,18 @@ export class UsersService extends ItemsService {
 
 				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']], keys[0]);
+			}
+
+			if (data['phone_number']) {
+				if (keys.length > 1) {
+					throw new RecordNotUniqueError({
+						collection: 'directus_users',
+						field: 'phone_number',
+					});
+				}
+
+				this.validatePhoneNumber(data['phone_number']);
+				await this.checkUniquePhoneNumbers([data['phone_number']], keys[0]);
 			}
 
 			if (data['password']) {
@@ -523,5 +617,53 @@ export class UsersService extends ItemsService {
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' }, opts);
+	}
+
+	async requestOneTimePassword(phoneNumber: string): Promise<void> {
+		const smsService = new SmsService({
+			schema: this.schema,
+			knex: this.knex,
+			accountability: this.accountability,
+		});
+
+		const translationsService = new TranslationsService({
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
+		const settingsService = new SettingsService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		let otp = '';
+
+		for (let i = 0; i < 6; i++) {
+			otp += Math.floor(Math.random() * 10);
+		}
+
+		const user = await this.getUserByPhoneNumber(phoneNumber);
+
+		await this.knex('directus_users')
+			.update({
+				sms_one_time_password: await generateHash(otp),
+				sms_one_time_password_expire: new Date(Date.now() + getMilliseconds(env['SMS_OTP_TTL'], 0)),
+			})
+			.where({ id: user.id });
+
+		const translation = await translationsService.readyOneByLanguageAndKey(user.language, 'otp_sms');
+
+		const project = await settingsService.readSingleton({
+			fields: ['project_name'],
+		});
+
+		let otpMessage = `Your ${project['project_name']} verification code is ${otp}`;
+
+		if (translation != null) {
+			otpMessage = translation.value.replace('{{otp}}', otp);
+			otpMessage = otpMessage.replace('{{projectName}}', project['project_name']);
+		}
+
+		smsService.send([phoneNumber], otpMessage);
 	}
 }

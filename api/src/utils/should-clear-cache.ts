@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type Keyv from 'keyv';
 import type { MutationOptions } from '../types/items.js';
 

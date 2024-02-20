@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { toBoolean } from '@directus/utils';
 import { getCache } from '../../cache.js';
 import { scheduleSynchronizedJob } from '../../utils/schedule.js';

@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { Extension } from '@directus/extensions';
 import { getLocalExtensions, getPackageExtensions, resolvePackageExtensions } from '@directus/extensions/node';
 import { useLogger } from '../../logger.js';

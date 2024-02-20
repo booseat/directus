@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { InvalidQueryError } from '@directus/errors';
 import type { Query } from '@directus/types';
 import Joi from 'joi';

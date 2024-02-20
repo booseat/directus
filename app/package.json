@@ -1,5 +1,5 @@
 {
-	"name": "@directus/app",
+	"name": "@booseat/directus-app",
 	"version": "10.15.1",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
@@ -43,7 +43,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@directus/validation": "workspace:*",
+		"@booseat/directus-validation": "workspace:*",
 		"@editorjs/attaches": "1.3.0",
 		"@editorjs/checklist": "1.6.0",
 		"@editorjs/code": "2.9.0",

@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { Request } from 'express';
 import url from 'url';
 import { Url } from './url.js';

@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type { SchemaOverview } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import type { Options } from 'keyv';

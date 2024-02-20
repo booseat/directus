@@ -1,5 +1,5 @@
 import { JAVASCRIPT_FILE_EXTS } from '@directus/constants';
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import type {
 	ApiExtension,
 	BundleExtension,

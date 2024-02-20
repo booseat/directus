@@ -1,5 +1,5 @@
 import { useRelationsStore } from '@/stores/relations';
-import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
+import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@booseat/directus-validation';
 import { Field, LogicalFilterAND } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';

@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import camelcase from 'camelcase';
 import { set } from 'lodash-es';
 

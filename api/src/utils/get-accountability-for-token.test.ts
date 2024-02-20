@@ -1,10 +1,10 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import jwt from 'jsonwebtoken';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import { getAccountabilityForToken } from './get-accountability-for-token.js';
 
-vi.mock('@directus/env');
+vi.mock('@booseat/directus-env');
 
 vi.mock('../database/index', () => {
 	const self: Record<string, any> = {

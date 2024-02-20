@@ -1,5 +1,5 @@
 {
-	"name": "@directus/env",
+	"name": "@booseat/directus-env",
 	"version": "1.0.2",
 	"description": "Utilities around using global env configuration",
 	"homepage": "https://directus.io",

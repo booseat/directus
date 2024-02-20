@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { parseJSON } from '@directus/utils';
 import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';

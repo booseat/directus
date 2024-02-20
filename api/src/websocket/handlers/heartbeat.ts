@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { ServiceUnavailableError } from '@directus/errors';
 import type { ActionHandler } from '@directus/types';
 import { toBoolean } from '@directus/utils';

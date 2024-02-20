@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv } from '@booseat/directus-env';
 import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';

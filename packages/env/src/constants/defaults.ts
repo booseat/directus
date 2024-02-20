@@ -78,6 +78,10 @@ export const DEFAULTS = {
 	EMAIL_SENDMAIL_NEW_LINE: 'unix',
 	EMAIL_SENDMAIL_PATH: '/usr/sbin/sendmail',
 
+	SMS_VERIFY_SETUP: true,
+	SMS_GATEWAY: 'messagebird',
+	SMS_OTP_TTL: '15m',
+
 	TELEMETRY: true,
 	TELEMETRY_URL: 'https://telemetry.directus.io',
 
