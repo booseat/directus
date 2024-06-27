@@ -9,7 +9,7 @@ import {
 	ServiceUnavailableError,
 	UserSuspendedError,
 } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview, Item as AnyItem } from '@directus/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
@@ -58,7 +58,6 @@ export class AuthenticationService {
 			session: boolean;
 		}>,
 	): Promise<LoginResult> {
-		const { nanoid } = await import('nanoid');
 
 		const STALL_TIME = env['LOGIN_STALL_TIME'] as number;
 		const timeStart = performance.now();
@@ -139,35 +138,7 @@ export class AuthenticationService {
 			throw new InvalidProviderError();
 		}
 
-		const settingsService = new SettingsService({
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		const { auth_login_attempts: allowedAttempts } = await settingsService.readSingleton({
-			fields: ['auth_login_attempts'],
-		});
-
-		if (allowedAttempts !== null) {
-			loginAttemptsLimiter.points = allowedAttempts;
-
-			try {
-				await loginAttemptsLimiter.consume(user.id);
-			} catch (error) {
-				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
-					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
-					user.status = 'suspended';
-
-					// This means that new attempts after the user has been re-activated will be accepted
-					await loginAttemptsLimiter.set(user.id, 0, 0);
-				} else {
-					throw new ServiceUnavailableError({
-						service: 'authentication',
-						reason: 'Rate limiter unreachable',
-					});
-				}
-			}
-		}
+		const allowedAttempts = await this.checkAttempts(user);
 
 		try {
 			await provider.login(clone(user), cloneDeep(updatedPayload));
@@ -194,89 +165,7 @@ export class AuthenticationService {
 			}
 		}
 
-		const roles = await fetchRolesTree(user.role, this.knex);
-
-		const globalAccess = await fetchGlobalAccess(
-			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
-			this.knex,
-		);
-
-		const tokenPayload: DirectusTokenPayload = {
-			id: user.id,
-			role: user.role,
-			app_access: globalAccess.app,
-			admin_access: globalAccess.admin,
-		};
-
-		const refreshToken = nanoid(64);
-		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
-
-		if (options?.session) {
-			tokenPayload.session = refreshToken;
-		}
-
-		const customClaims = await emitter.emitFilter(
-			'auth.jwt',
-			tokenPayload,
-			{
-				status: 'pending',
-				user: user?.id,
-				provider: providerName,
-				type: 'login',
-			},
-			{
-				database: this.knex,
-				schema: this.schema,
-				accountability: this.accountability,
-			},
-		);
-
-		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
-
-		const accessToken = jwt.sign(customClaims, getSecret(), {
-			expiresIn: TTL,
-			issuer: 'directus',
-		});
-
-		await this.knex('directus_sessions').insert({
-			token: refreshToken,
-			user: user.id,
-			expires: refreshTokenExpiration,
-			ip: this.accountability?.ip,
-			user_agent: this.accountability?.userAgent,
-			origin: this.accountability?.origin,
-		});
-
-		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
-
-		if (this.accountability) {
-			await this.activityService.createOne({
-				action: Action.LOGIN,
-				user: user.id,
-				ip: this.accountability.ip,
-				user_agent: this.accountability.userAgent,
-				origin: this.accountability.origin,
-				collection: 'directus_users',
-				item: user.id,
-			});
-		}
-
-		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
-
-		emitStatus('success');
-
-		if (allowedAttempts !== null) {
-			await loginAttemptsLimiter.set(user.id, 0, 0);
-		}
-
-		await stall(STALL_TIME, timeStart);
-
-		return {
-			accessToken,
-			refreshToken,
-			expires: getMilliseconds(TTL),
-			id: user.id,
-		};
+		return await this.generateToken(user, allowedAttempts, providerName, STALL_TIME, timeStart, options, emitStatus);
 	}
 
 	async refresh(refreshToken: string, options?: Partial<{ session: boolean }>): Promise<LoginResult> {
@@ -556,5 +445,156 @@ export class AuthenticationService {
 
 		const provider = getAuthProvider(user.provider);
 		await provider.verify(clone(user), password);
+	}
+
+	async checkAttempts(user: User): Promise<AnyItem> {
+		const settingsService = new SettingsService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const { auth_login_attempts: allowedAttempts } = await settingsService.readSingleton({
+			fields: ['auth_login_attempts'],
+		});
+
+		if (allowedAttempts !== null) {
+			loginAttemptsLimiter.points = allowedAttempts;
+
+			try {
+				await loginAttemptsLimiter.consume(user.id);
+			} catch (error) {
+				if (error instanceof RateLimiterRes && error.remainingPoints === 0) {
+					await this.knex('directus_users').update({ status: 'suspended' }).where({ id: user.id });
+					user.status = 'suspended';
+
+					// This means that new attempts after the user has been re-activated will be accepted
+					await loginAttemptsLimiter.set(user.id, 0, 0);
+				} else {
+					throw new ServiceUnavailableError({
+						service: 'authentication',
+						reason: 'Rate limiter unreachable',
+					});
+				}
+			}
+		}
+
+		return allowedAttempts;
+	}
+
+	async generateToken(
+		user: User,
+		allowedAttempts: AnyItem,
+		providerName: string = DEFAULT_AUTH_PROVIDER,
+		STALL_TIME = env['LOGIN_STALL_TIME'] as number,
+		timeStart = performance.now(),
+		options?: Partial<{
+			otp: string;
+			session: boolean;
+		}>,
+		emitStatus?: (status: 'fail' | 'success') => void,
+	): Promise<{ accessToken: string; refreshToken: string; expires: number; id: string }> {
+		const { nanoid } = await import('nanoid');
+
+		if (!emitStatus) {
+			emitStatus = (status: 'fail' | 'success') => {
+				emitter.emitAction(
+					'auth.login',
+					{
+						status,
+						user: user?.id,
+						provider: providerName,
+					},
+					{
+						database: this.knex,
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				);
+			};
+		}
+
+		const roles = await fetchRolesTree(user.role, this.knex);
+
+		const globalAccess = await fetchGlobalAccess(
+			{ roles, user: user.id, ip: this.accountability?.ip ?? null },
+			this.knex,
+		);
+
+		const tokenPayload: DirectusTokenPayload = {
+			id: user.id,
+			role: user.role,
+			app_access: globalAccess.app,
+			admin_access: globalAccess.admin,
+		};
+
+		const refreshToken = nanoid(64);
+		const refreshTokenExpiration = new Date(Date.now() + getMilliseconds(env['REFRESH_TOKEN_TTL'], 0));
+
+		if (options?.session) {
+			tokenPayload.session = refreshToken;
+		}
+
+		const customClaims = await emitter.emitFilter(
+			'auth.jwt',
+			tokenPayload,
+			{
+				status: 'pending',
+				user: user?.id,
+				provider: providerName,
+				type: 'login',
+			},
+			{
+				database: this.knex,
+				schema: this.schema,
+				accountability: this.accountability,
+			},
+		);
+
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+
+		const accessToken = jwt.sign(customClaims, getSecret(), {
+			expiresIn: TTL,
+			issuer: 'directus',
+		});
+
+		await this.knex('directus_sessions').insert({
+			token: refreshToken,
+			user: user.id,
+			expires: refreshTokenExpiration,
+			ip: this.accountability?.ip,
+			user_agent: this.accountability?.userAgent,
+			origin: this.accountability?.origin,
+		});
+
+		await this.knex('directus_sessions').delete().where('expires', '<', new Date());
+
+		if (this.accountability) {
+			await this.activityService.createOne({
+				action: Action.LOGIN,
+				user: user.id,
+				ip: this.accountability.ip,
+				user_agent: this.accountability.userAgent,
+				origin: this.accountability.origin,
+				collection: 'directus_users',
+				item: user.id,
+			});
+		}
+
+		await this.knex('directus_users').update({ last_access: new Date() }).where({ id: user.id });
+
+		emitStatus('success');
+
+		if (allowedAttempts !== null) {
+			await loginAttemptsLimiter.set(user.id, 0, 0);
+		}
+
+		await stall(STALL_TIME, timeStart);
+
+		return {
+			accessToken,
+			refreshToken,
+			expires: getMilliseconds(TTL),
+			id: user.id,
+		};
 	}
 }
